@@ -8,7 +8,10 @@ public class App {
     private JPanel leftPanel;
     private JPanel rightPanel;
     private JPanel centerPanel;
+    private JButton markAsDoneButton;
     private JTable table2;
+    private JTable table3;
+    private JButton visitButton;
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
@@ -16,6 +19,7 @@ public class App {
         Object[][] data = {{"Kathy", "Smith"},{"John", "Doe"}};
         this.table1 = new JTable(data, columnNames);
         this.table2 = new JTable(data, columnNames);
+        this.table3 = new JTable(data, columnNames);
     }
 
     public static void main(String[] args) {
