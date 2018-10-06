@@ -1,15 +1,14 @@
 package core;
 
 import com.jaunt.*;
-
-import java.util.ArrayList;
+import java.util.HashMap;
 
 abstract class NewsScrapper {
 
-    String targetAddress;
-    ArrayList<Element> headlineTags;
+    public String targetAddress;
+    public HashMap<String, String> headlineTags;
 
-    abstract void addHeadlineTags();
+    abstract HashMap<String, String> addHeadlineTags();
     abstract String getNewsLink(Element news);
 
     public String getTargetAddress() {

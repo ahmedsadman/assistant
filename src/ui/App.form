@@ -107,7 +107,7 @@
           </vspacer>
           <component id="dbdb0" class="javax.swing.JLabel">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <font size="26"/>
@@ -118,12 +118,17 @@
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <horizontalScrollBarPolicy value="30"/>
+              <verticalScrollBarPolicy value="20"/>
+            </properties>
             <border type="none"/>
             <children>
-              <component id="e7fab" class="javax.swing.JTable" binding="table3" custom-create="true" default-binding="true">
+              <component id="e7fab" class="javax.swing.JTable" binding="newsTable" custom-create="true">
                 <constraints/>
                 <properties>
+                  <autoCreateRowSorter value="false"/>
+                  <autoResizeMode value="0"/>
                   <fillsViewportHeight value="true"/>
                   <preferredScrollableViewportSize width="250" height="100"/>
                 </properties>
@@ -161,13 +166,13 @@
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
             </constraints>
           </vspacer>
-          <component id="4fa69" class="javax.swing.JLabel">
+          <component id="4fa69" class="javax.swing.JLabel" binding="weatherLabel">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <font size="26"/>
-              <text value="Weather"/>
+              <text value="Today's Weather"/>
             </properties>
           </component>
         </children>
