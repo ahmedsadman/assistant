@@ -27,6 +27,11 @@ public class App {
     private JTable newsTable;
     private JButton visitButton;
     private JLabel weatherLabel;
+    private JButton addButton;
+    private JButton addButton1;
+    private JButton removeButton;
+    private JTextField textField1;
+    private JButton updateButton;
     DefaultTableModel newsModel;
 
     private ProthomAloScrapper sc;
@@ -126,11 +131,20 @@ public class App {
 
     }
 
+    static void centerWindow(Window frame) {
+        // start the app at the center of screen
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - frame.getHeight()) / 2);
+        frame.setLocation(x, y);
+    }
+
     public static void main(String[] args) {
         JFrame frame = new JFrame("Assistant");
         frame.setContentPane(new App().rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        App.centerWindow(frame);
         frame.setVisible(true);
     }
 }
