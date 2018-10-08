@@ -140,6 +140,7 @@
                   <autoCreateRowSorter value="false"/>
                   <autoResizeMode value="0"/>
                   <fillsViewportHeight value="true"/>
+                  <font name="Segoe UI" size="13"/>
                   <intercellSpacing width="1" height="1"/>
                   <preferredScrollableViewportSize width="300" height="100"/>
                   <showHorizontalLines value="false"/>
@@ -166,7 +167,7 @@
           <font size="20" style="1"/>
         </border>
         <children>
-          <component id="de094" class="javax.swing.JLabel">
+          <component id="de094" class="javax.swing.JLabel" binding="locName">
             <constraints>
               <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -185,7 +186,9 @@
             <constraints>
               <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <font name="Segoe UI"/>
+            </properties>
             <border type="none"/>
             <children>
               <component id="185db" class="javax.swing.JLabel">
@@ -193,16 +196,18 @@
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Temperature"/>
+                  <font name="Segoe UI" size="14" style="0"/>
+                  <text value="Temperature : "/>
                 </properties>
               </component>
-              <component id="7c34e" class="javax.swing.JLabel">
+              <component id="7c34e" class="javax.swing.JLabel" binding="tempValue">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="1" anchor="8" fill="0" indent="0" use-parent-layout="false">
                     <preferred-size width="1" height="1"/>
                   </grid>
                 </constraints>
                 <properties>
+                  <font name="Segoe UI" size="14" style="0"/>
                   <text value="40 C"/>
                 </properties>
               </component>
@@ -211,14 +216,16 @@
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Condition"/>
+                  <font name="Segoe UI" size="14" style="0"/>
+                  <text value="Condition : "/>
                 </properties>
               </component>
-              <component id="81052" class="javax.swing.JLabel">
+              <component id="81052" class="javax.swing.JLabel" binding="weatherCondition">
                 <constraints>
                   <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
+                  <font name="Segoe UI" size="14" style="0"/>
                   <text value="Cloudy"/>
                 </properties>
               </component>
@@ -227,14 +234,16 @@
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Humidity"/>
+                  <font name="Segoe UI" size="14" style="0"/>
+                  <text value="Humidity : "/>
                 </properties>
               </component>
-              <component id="32d00" class="javax.swing.JLabel">
+              <component id="32d00" class="javax.swing.JLabel" binding="humidity">
                 <constraints>
                   <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
+                  <font name="Segoe UI" size="14" style="0"/>
                   <text value="77%"/>
                 </properties>
               </component>
@@ -243,14 +252,16 @@
                   <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Something"/>
+                  <font name="Segoe UI" size="14" style="0"/>
+                  <text value="Pressure : "/>
                 </properties>
               </component>
-              <component id="7e86c" class="javax.swing.JLabel">
+              <component id="7e86c" class="javax.swing.JLabel" binding="pressureValue">
                 <constraints>
                   <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
+                  <font name="Segoe UI" size="14" style="0"/>
                   <text value="Else"/>
                 </properties>
               </component>
@@ -263,7 +274,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="9aad9" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+              <component id="9aad9" class="javax.swing.JTextField" binding="updateField">
                 <constraints/>
                 <properties>
                   <columns value="10"/>

@@ -1,6 +1,7 @@
 package ui;
 
 import core.ProthomAloScrapper;
+import core.WeatherData;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -30,14 +31,22 @@ public class App {
     private JButton addButton;
     private JButton addButton1;
     private JButton removeButton;
-    private JTextField textField1;
+    private JTextField updateField;
     private JButton updateButton;
+    private JLabel tempValue;
+    private JLabel locName;
+    private JLabel weatherCondition;
+    private JLabel humidity;
+    private JLabel pressureValue;
     DefaultTableModel newsModel;
 
     private ProthomAloScrapper sc;
+    private WeatherData wd;
 
     public App() {
         this.sc = new ProthomAloScrapper();
+        this.wd = new WeatherData();
+        this.updateNewsTable();
 
         markAsDoneButton.addActionListener(new ActionListener() {
             @Override
@@ -64,7 +73,22 @@ public class App {
             }
         });
 
-        this.updateNewsTable();
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("update button clicked");
+                String loc = updateField.getText();
+                wd.updateData(loc);
+                locName.setText(wd.getCity_name());
+                String temp = WeatherData.roundValue(wd.getTemperature());
+                String pressure = WeatherData.roundValue(wd.getPressure())
+;
+                tempValue.setText(temp + " C");
+                weatherCondition.setText(wd.getWeather_type());
+                humidity.setText(String.valueOf(wd.getHumidity()) + "%");
+                pressureValue.setText(pressure + " Pa");
+            }
+        });
     }
 
     private void updateNewsTable() {
@@ -112,6 +136,7 @@ public class App {
 
         // setup the news table
         this.newsTable = new JTable();
+        this.newsTable.setRowHeight(20);
         this.newsModel = new DefaultTableModel(0, 0) {
             @Override
             // make the cells non editable
@@ -131,7 +156,7 @@ public class App {
 
     }
 
-    static void centerWindow(Window frame) {
+    private static void centerWindow(Window frame) {
         // start the app at the center of screen
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);

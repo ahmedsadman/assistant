@@ -2,6 +2,9 @@ package core;
 
 import org.json.*;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 /**
  * The Weather information data model
  * @author Ahmed Sadman Muhib
@@ -17,7 +20,7 @@ public class WeatherData {
     private float temperature_max;
     private float pressure;
 
-    private void updateData(String query_city) {
+    public void updateData(String query_city) {
         WeatherApi api = new WeatherApi(query_city);
         JSONObject response = new JSONObject(api.getResponse());
 
@@ -37,7 +40,7 @@ public class WeatherData {
         this.weather_desc = weather_info.getString("description");
     }
 
-    private double kelvinToCelsius(double temperature) {
+    public double kelvinToCelsius(double temperature) {
         return temperature - 273;
     }
 
@@ -65,7 +68,7 @@ public class WeatherData {
     }
 
     public double getTemperature() {
-        return temperature;
+        return kelvinToCelsius(temperature);
     }
 
     public double getTemperature_min() {
@@ -84,9 +87,15 @@ public class WeatherData {
         return humidity;
     }
 
+    public static String roundValue(double val) {
+        DecimalFormat df = new DecimalFormat("####.##");
+        df.setRoundingMode(RoundingMode.CEILING);
+        return df.format(val);
+    }
+
     public static void main(String args[]) {
         WeatherData ob = new WeatherData();
-        ob.updateData("Rangpur,bd");
+        ob.updateData("Dhaka");
         ob.showData();
     }
 }
