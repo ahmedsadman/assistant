@@ -1,5 +1,6 @@
 package ui;
 
+import core.Database;
 import core.ProthomAloScrapper;
 import core.WeatherData;
 
@@ -28,7 +29,7 @@ public class App {
     private JTable newsTable;
     private JButton visitButton;
     private JLabel weatherLabel;
-    private JButton addButton;
+    private JButton addTodoButton;
     private JButton addButton1;
     private JButton removeButton;
     private JTextField updateField;
@@ -42,11 +43,14 @@ public class App {
 
     private ProthomAloScrapper sc;
     private WeatherData wd;
+    private Database db;
 
     public App() {
         this.sc = new ProthomAloScrapper();
         this.wd = new WeatherData();
+        this.db = new Database();
         this.updateNewsTable();
+
 
         markAsDoneButton.addActionListener(new ActionListener() {
             @Override
@@ -78,17 +82,31 @@ public class App {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("update button clicked");
                 String loc = updateField.getText();
+                db.updateWeatherLocation(loc);
                 wd.updateData(loc);
                 locName.setText(wd.getCity_name());
                 String temp = WeatherData.roundValue(wd.getTemperature());
-                String pressure = WeatherData.roundValue(wd.getPressure())
-;
+                String pressure = WeatherData.roundValue(wd.getPressure());
                 tempValue.setText(temp + " C");
                 weatherCondition.setText(wd.getWeather_type());
                 humidity.setText(String.valueOf(wd.getHumidity()) + "%");
                 pressureValue.setText(pressure + " Pa");
             }
         });
+
+        addTodoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AddTodoDialog dialog = new AddTodoDialog();
+                dialog.setTitle("Create new task");
+                dialog.pack();
+                App.centerWindow(dialog);
+                dialog.setVisible(true);
+            }
+        });
+
+        // get the weather data, depends on updateButton event so should not be moved from here
+        this.getWeatherData();
     }
 
     private void updateNewsTable() {
@@ -101,6 +119,12 @@ public class App {
             newsModel.addRow(new Object[] {pair.getKey(), pair.getValue()});
         }
         this.setColumnWidth(newsTable);
+    }
+
+    private void getWeatherData() {
+        String loc = this.db.getWeatherLocation();
+        updateField.setText(loc);
+        updateButton.doClick();
     }
 
     // Dynamically resizes a table columns based on max-width

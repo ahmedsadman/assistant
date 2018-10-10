@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ui.App">
   <grid id="27dc6" binding="rootPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
     <constraints>
-      <xy x="20" y="20" width="1001" height="648"/>
+      <xy x="20" y="20" width="1001" height="709"/>
     </constraints>
     <properties/>
     <border type="empty">
@@ -69,7 +69,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="31844" class="javax.swing.JButton" binding="addButton" default-binding="true">
+              <component id="31844" class="javax.swing.JButton" binding="addTodoButton">
                 <constraints/>
                 <properties>
                   <text value="Add"/>
