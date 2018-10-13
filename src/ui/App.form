@@ -24,7 +24,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="3103" class="javax.swing.JTable" binding="table1" custom-create="true" default-binding="true">
+              <component id="3103" class="javax.swing.JTable" binding="todoTable" custom-create="true">
                 <constraints/>
                 <properties>
                   <fillsViewportHeight value="true"/>

@@ -1,5 +1,7 @@
 package ui;
 
+import core.Database;
+
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -7,9 +9,11 @@ public class AddTodoDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JTextField textField1;
+    private JTextField textTodo;
+    private Database db;
 
     public AddTodoDialog() {
+        db = Database.getdb();
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -44,6 +48,21 @@ public class AddTodoDialog extends JDialog {
 
     private void onOK() {
         // add your code here
+        String desc = textTodo.getText();
+        if (desc.equals("")) {
+            JOptionPane.showMessageDialog(null, "Please fill up the field", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (db.insertTodo(desc)) {
+            JOptionPane.showMessageDialog(null, "Task added", "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Task could not be added", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         dispose();
     }
 

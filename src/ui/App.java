@@ -14,13 +14,15 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.awt.Desktop;
 
 public class App {
     private JPanel rootPanel;
-    private JTable table1;
+    private JTable todoTable;
     private JPanel leftPanel;
     private JPanel rightPanel;
     private JPanel centerPanel;
@@ -40,6 +42,7 @@ public class App {
     private JLabel humidity;
     private JLabel pressureValue;
     DefaultTableModel newsModel;
+    DefaultTableModel todoModel;
 
     private ProthomAloScrapper sc;
     private WeatherData wd;
@@ -48,14 +51,20 @@ public class App {
     public App() {
         this.sc = new ProthomAloScrapper();
         this.wd = new WeatherData();
-        this.db = new Database();
+        this.db = Database.getdb();
         this.updateNewsTable();
+        this.updateTodoTable();
 
 
         markAsDoneButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                weatherLabel.setText("Done");
+                int row = todoTable.getSelectedRow();
+                String desc = (String) todoTable.getModel().getValueAt(row, 0);
+                if (!db.deleteTodo(desc))
+                    JOptionPane.showMessageDialog(null, "Could not delete", "Error",
+                            JOptionPane.INFORMATION_MESSAGE);
+                updateTodoTable();
             }
         });
 
@@ -102,6 +111,7 @@ public class App {
                 dialog.pack();
                 App.centerWindow(dialog);
                 dialog.setVisible(true);
+                updateTodoTable();
             }
         });
 
@@ -119,6 +129,20 @@ public class App {
             newsModel.addRow(new Object[] {pair.getKey(), pair.getValue()});
         }
         this.setColumnWidth(newsTable);
+    }
+
+    private void updateTodoTable() {
+        ResultSet rs = db.getTodoList();
+        todoModel.setRowCount(0);
+        try {
+            while (rs.next()) {
+                String task = rs.getString("description");
+                todoModel.addRow(new Object[] {task});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        this.setColumnWidth(todoTable);
     }
 
     private void getWeatherData() {
@@ -170,12 +194,25 @@ public class App {
         };
 
         String[] columnNames = {"Title"};
+        String[] todoColumns = {"Description"};
         newsModel.setColumnIdentifiers(columnNames);
         this.newsTable.setModel(newsModel);
 
         // other tables
         Object[][] data = {{"Kathy", "Smith"},{"John", "Doe"}};
-        this.table1 = new JTable(data, columnNames);
+
+        // setup the todo table
+        this.todoTable = new JTable();
+        this.todoModel = new DefaultTableModel(0, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        this.todoModel.setColumnIdentifiers(todoColumns);
+        this.todoTable.setModel(todoModel);
+        this.todoTable.setRowHeight(20);
+
         this.table2 = new JTable(data, columnNames);
 
     }
