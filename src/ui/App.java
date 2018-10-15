@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.awt.Desktop;
 
 public class App {
-    private JPanel rootPanel;
+    public JPanel rootPanel;
     private JTable todoTable;
     private JPanel leftPanel;
     private JPanel rightPanel;
@@ -291,7 +291,7 @@ public class App {
 
     }
 
-    private static void centerWindow(Window frame) {
+    public static void centerWindow(Window frame) {
         // start the app at the center of screen
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         int x = (int) ((dimension.getWidth() - frame.getWidth()) / 2);
