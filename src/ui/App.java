@@ -43,6 +43,7 @@ public class App {
     private JLabel weatherCondition;
     private JLabel humidity;
     private JLabel pressureValue;
+    private JLabel weatherImage;
     DefaultTableModel newsModel;
     DefaultTableModel todoModel;
     DefaultTableModel eventsModel;
@@ -103,6 +104,7 @@ public class App {
                 weatherCondition.setText(wd.getWeather_type());
                 humidity.setText(String.valueOf(wd.getHumidity()) + "%");
                 pressureValue.setText(pressure + " Pa");
+                weatherImage.setIcon(wd.getWeatherIcon());
             }
         });
 
@@ -232,7 +234,7 @@ public class App {
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
-
+        weatherImage = new JLabel();
         String[] newsColumns = {"Title"};
         String[] todoColumns = {"Description"};
         String[] eventColumns = {"Description", "Date"};
