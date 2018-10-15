@@ -1,6 +1,9 @@
 package core;
 
 import java.sql.*;
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Database {
     // singleton class
@@ -12,6 +15,7 @@ public class Database {
         connect();
         createWeatherTable();
         createTodoTable();
+        createEventsTable();
     }
 
     public static Database getdb() {
@@ -57,6 +61,59 @@ public class Database {
                 "description text" +
                 ");";
         executeStatement(sql);
+    }
+
+    private void createEventsTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS events (" +
+                "description text," +
+                "event_date text" +
+                ");";
+        executeStatement(sql);
+    }
+
+    public ResultSet getEventsList() {
+        LocalDate now = LocalDate.now();
+        String today = now.toString();
+        String sql = "SELECT * FROM events WHERE event_date >= ? ORDER BY event_date";
+        ResultSet rs = null;
+
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, today);
+            rs = stmt.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return rs;
+    }
+
+    public boolean insertEvent(String desc, String date) {
+        String sql = "INSERT INTO events VALUES(?, ?)";
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, desc);
+            stmt.setString(2, date);
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean deleteEvent(String desc, String date) {
+        String sql = "DELETE FROM events WHERE description = ? AND event_date = ?";
+        try {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, desc);
+            stmt.setString(2, date);
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public ResultSet getTodoList() {

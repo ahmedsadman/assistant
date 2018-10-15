@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.text.TableView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.awt.Desktop;
@@ -27,13 +29,13 @@ public class App {
     private JPanel rightPanel;
     private JPanel centerPanel;
     private JButton markAsDoneButton;
-    private JTable table2;
+    private JTable eventsTable;
     private JTable newsTable;
     private JButton visitButton;
     private JLabel weatherLabel;
     private JButton addTodoButton;
-    private JButton addButton1;
-    private JButton removeButton;
+    private JButton addEventButton;
+    private JButton removeEventButton;
     private JTextField updateField;
     private JButton updateButton;
     private JLabel tempValue;
@@ -43,6 +45,7 @@ public class App {
     private JLabel pressureValue;
     DefaultTableModel newsModel;
     DefaultTableModel todoModel;
+    DefaultTableModel eventsModel;
 
     private ProthomAloScrapper sc;
     private WeatherData wd;
@@ -54,7 +57,7 @@ public class App {
         this.db = Database.getdb();
         this.updateNewsTable();
         this.updateTodoTable();
-
+        this.updateEventsTable();
 
         markAsDoneButton.addActionListener(new ActionListener() {
             @Override
@@ -115,8 +118,33 @@ public class App {
             }
         });
 
+        addEventButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AddEventDialog dlg = new AddEventDialog();
+                dlg.setTitle("Create new event");
+                dlg.pack();
+                App.centerWindow(dlg);
+                dlg.setVisible(true);
+                updateEventsTable();
+            }
+        });
+
         // get the weather data, depends on updateButton event so should not be moved from here
         this.getWeatherData();
+
+        removeEventButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = eventsTable.getSelectedRow();
+                String desc = (String) eventsTable.getModel().getValueAt(row, 0);
+                String date = (String) eventsTable.getModel().getValueAt(row, 1);
+                if (date.equals("Today"))
+                    date = String.valueOf(LocalDate.now());
+                db.deleteEvent(desc, date);
+                updateEventsTable();
+            }
+        });
     }
 
     private void updateNewsTable() {
@@ -129,6 +157,25 @@ public class App {
             newsModel.addRow(new Object[] {pair.getKey(), pair.getValue()});
         }
         this.setColumnWidth(newsTable);
+    }
+
+    private void updateEventsTable() {
+        eventsModel.setRowCount(0);
+        ResultSet rs = db.getEventsList();
+        String date;
+        String today = String.valueOf(LocalDate.now());
+
+        try {
+            while(rs.next()) {
+                String desc = rs.getString("description");
+                String date_comp = rs.getString("event_date");
+                date = (date_comp.equals(today)) ? "Today" : date_comp;
+                eventsModel.addRow(new Object[] {desc, date});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        this.setColumnWidth(eventsTable);
     }
 
     private void updateTodoTable() {
@@ -153,10 +200,10 @@ public class App {
 
     // Dynamically resizes a table columns based on max-width
     private void setColumnWidth(JTable table) {
-
         for (int column = 0; column < table.getColumnCount(); column++)
         {
             TableColumn tableColumn = table.getColumnModel().getColumn(column);
+
             int preferredWidth = tableColumn.getMinWidth();
             int maxWidth = tableColumn.getMaxWidth();
 
@@ -176,11 +223,19 @@ public class App {
             }
 
             tableColumn.setPreferredWidth( preferredWidth );
+
+            // if table still doesn't fill it's parent JScrollPane, fill it using Auto Resize
+            if (table.getScrollableTracksViewportWidth())
+                table.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
         }
     }
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
+
+        String[] newsColumns = {"Title"};
+        String[] todoColumns = {"Description"};
+        String[] eventColumns = {"Description", "Date"};
 
         // setup the news table
         this.newsTable = new JTable();
@@ -193,16 +248,17 @@ public class App {
             }
         };
 
-        String[] columnNames = {"Title"};
-        String[] todoColumns = {"Description"};
-        newsModel.setColumnIdentifiers(columnNames);
+        newsModel.setColumnIdentifiers(newsColumns);
         this.newsTable.setModel(newsModel);
 
-        // other tables
-        Object[][] data = {{"Kathy", "Smith"},{"John", "Doe"}};
-
         // setup the todo table
-        this.todoTable = new JTable();
+        this.todoTable = new JTable() {
+            @Override
+            public boolean getScrollableTracksViewportWidth() {
+                return getPreferredSize().width < getParent().getWidth();
+            }
+        };
+
         this.todoModel = new DefaultTableModel(0, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -213,7 +269,23 @@ public class App {
         this.todoTable.setModel(todoModel);
         this.todoTable.setRowHeight(20);
 
-        this.table2 = new JTable(data, columnNames);
+        // setup the events table
+        this.eventsTable = new JTable() {
+            public boolean getScrollableTracksViewportWidth() {
+                return getPreferredSize().width < getParent().getWidth();
+            }
+        };
+
+        this.eventsModel = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        this.eventsModel.setColumnIdentifiers(eventColumns);
+        this.eventsTable.setModel(eventsModel);
+        this.eventsTable.setRowHeight(20);
 
     }
 
