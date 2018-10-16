@@ -23,7 +23,7 @@ import java.util.Iterator;
 import java.awt.Desktop;
 
 public class App {
-    public JPanel rootPanel;
+    private JPanel rootPanel;
     private JTable todoTable;
     private JPanel leftPanel;
     private JPanel rightPanel;
@@ -299,7 +299,7 @@ public class App {
         frame.setLocation(x, y);
     }
 
-    public static void main(String[] args) {
+    public static void startApp() {
         JFrame frame = new JFrame("Assistant");
         frame.setContentPane(new App().rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
