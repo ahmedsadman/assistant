@@ -241,7 +241,7 @@ public class App {
 
         // setup the news table
         this.newsTable = new JTable();
-        this.newsTable.setRowHeight(20);
+        this.newsTable.setRowHeight(25);
         this.newsModel = new DefaultTableModel(0, 0) {
             @Override
             // make the cells non editable
