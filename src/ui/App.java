@@ -56,9 +56,6 @@ public class App {
         this.sc = new ProthomAloScrapper();
         this.wd = new WeatherData();
         this.db = Database.getdb();
-        this.updateNewsTable();
-        this.updateTodoTable();
-        this.updateEventsTable();
 
         markAsDoneButton.addActionListener(new ActionListener() {
             @Override
@@ -132,8 +129,7 @@ public class App {
             }
         });
 
-        // get the weather data, depends on updateButton event so should not be moved from here
-        this.getWeatherData();
+
 
         removeEventButton.addActionListener(new ActionListener() {
             @Override
@@ -147,6 +143,20 @@ public class App {
                 updateEventsTable();
             }
         });
+
+        try {
+            this.updateNewsTable();
+            this.updateTodoTable();
+            this.updateEventsTable();
+            // get the weather data, depends on updateButton event so should not be moved from here
+            this.getWeatherData();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "The feeds cannot be updated due to internet " +
+                            "connectivity error. Please check your internet connection.", "Connection Error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.out.println(e.getMessage());
+        }
+
     }
 
     private void updateNewsTable() {
