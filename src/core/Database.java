@@ -1,9 +1,7 @@
 package core;
 
 import java.sql.*;
-import java.text.DateFormat;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class Database {
     // singleton class
@@ -24,8 +22,7 @@ public class Database {
         return db;
     }
 
-    private Connection connect() {
-        if (conn != null) return conn;
+    private void connect() {
         String connection_url = "jdbc:sqlite:" + dbname;
         try {
             conn = DriverManager.getConnection(connection_url);
@@ -34,8 +31,6 @@ public class Database {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
-        return conn;
     }
 
     private boolean executeStatement(String sql) {

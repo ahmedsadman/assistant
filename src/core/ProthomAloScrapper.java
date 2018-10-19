@@ -28,10 +28,6 @@ public class ProthomAloScrapper extends NewsScrapper{
                 // add the tags
                 for (Element h: headlines) {
                     headlineTags2.put(h.getChildText(), this.getNewsLink(h));
-
-                    // output each headline with it's content link
-//                    System.out.println(h.getChildText());
-//                    System.out.println("Link: " + this.getNewsLink(h) + "\n");
                 }
             }
 
@@ -43,8 +39,6 @@ public class ProthomAloScrapper extends NewsScrapper{
     }
 
     public HashMap<String, String> getHeadlineTags() {
-//        System.out.println("printing: ");
-//        System.out.println(this.headlineTags);
         return this.headlineTags;
     }
 

@@ -5,18 +5,13 @@ import core.ProthomAloScrapper;
 import core.WeatherData;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.text.TableView;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.net.*;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,7 +51,26 @@ public class App {
         this.sc = new ProthomAloScrapper();
         this.wd = new WeatherData();
         this.db = Database.getdb();
+        registerActionListeners();
+        updateDataFeeds();
+    }
 
+    private void updateDataFeeds() {
+        try {
+            this.updateNewsTable();
+            this.updateTodoTable();
+            this.updateEventsTable();
+            this.getWeatherData();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "The feeds could not be updated due to " +
+                            "internet connectivity error. Please check your internet connection.",
+                    "Connection Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void registerActionListeners() {
         markAsDoneButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -129,8 +143,6 @@ public class App {
             }
         });
 
-
-
         removeEventButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -143,20 +155,6 @@ public class App {
                 updateEventsTable();
             }
         });
-
-        try {
-            this.updateNewsTable();
-            this.updateTodoTable();
-            this.updateEventsTable();
-            // get the weather data, depends on updateButton event so should not be moved from here
-            this.getWeatherData();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "The feeds cannot be updated due to internet " +
-                            "connectivity error. Please check your internet connection.", "Connection Error",
-                    JOptionPane.ERROR_MESSAGE);
-            System.out.println(e.getMessage());
-        }
-
     }
 
     private void updateNewsTable() {
