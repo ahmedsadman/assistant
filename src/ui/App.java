@@ -48,26 +48,47 @@ public class App {
     private Database db;
 
     public App() {
-        this.sc = new ProthomAloScrapper();
-        this.wd = new WeatherData();
         this.db = Database.getdb();
         registerActionListeners();
-        updateDataFeeds();
+        this.updateTodoTable();
+        this.updateEventsTable();
     }
 
     private void updateDataFeeds() {
-        try {
-            this.updateNewsTable();
-            this.updateTodoTable();
-            this.updateEventsTable();
-            this.getWeatherData();
+        Thread t1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    updateNewsTable();
+                    getWeatherData();
+                    // setcolumnwidth() is called outside updatenewstable, for better gui experience
+                    // this helps to keep the table columns in full length even in the case fetch error
+                    setColumnWidth(newsTable);
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "The feeds could not be updated " +
+                                    "due to internet connectivity error. Please check your internet connection.",
+                            "Connection Error", JOptionPane.ERROR_MESSAGE);
+                    System.out.println(e.getMessage());
+                }
+            }
+        });
+        t1.start();
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "The feeds could not be updated due to " +
-                            "internet connectivity error. Please check your internet connection.",
-                    "Connection Error", JOptionPane.ERROR_MESSAGE);
-            System.out.println(e.getMessage());
-        }
+    }
+
+    private void onUpdate() {
+        // updates the weather info based on given location
+        String loc = updateField.getText();
+        db.updateWeatherLocation(loc);
+        wd.updateData(loc);
+        locName.setText(wd.getCity_name());
+        String temp = WeatherData.roundValue(wd.getTemperature());
+        String pressure = WeatherData.roundValue(wd.getPressure());
+        tempValue.setText(temp + " C");
+        weatherCondition.setText(wd.getWeather_type());
+        humidity.setText(String.valueOf(wd.getHumidity()) + "%");
+        pressureValue.setText(pressure + " Pa");
+        weatherImage.setIcon(wd.getWeatherIcon());
     }
 
     private void registerActionListeners() {
@@ -104,18 +125,7 @@ public class App {
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("update button clicked");
-                String loc = updateField.getText();
-                db.updateWeatherLocation(loc);
-                wd.updateData(loc);
-                locName.setText(wd.getCity_name());
-                String temp = WeatherData.roundValue(wd.getTemperature());
-                String pressure = WeatherData.roundValue(wd.getPressure());
-                tempValue.setText(temp + " C");
-                weatherCondition.setText(wd.getWeather_type());
-                humidity.setText(String.valueOf(wd.getHumidity()) + "%");
-                pressureValue.setText(pressure + " Pa");
-                weatherImage.setIcon(wd.getWeatherIcon());
+                onUpdate();
             }
         });
 
@@ -158,7 +168,6 @@ public class App {
     }
 
     private void updateNewsTable() {
-
         // fetch and update the news table
         HashMap<String, String> headlineTags = sc.getHeadlineTags();
         Iterator it = headlineTags.entrySet().iterator();
@@ -166,7 +175,7 @@ public class App {
             HashMap.Entry pair = (HashMap.Entry) it.next();
             newsModel.addRow(new Object[] {pair.getKey(), pair.getValue()});
         }
-        this.setColumnWidth(newsTable);
+
     }
 
     private void updateEventsTable() {
@@ -205,11 +214,12 @@ public class App {
     private void getWeatherData() {
         String loc = this.db.getWeatherLocation();
         updateField.setText(loc);
-        updateButton.doClick();
+        onUpdate();
     }
 
     // Dynamically resizes a table columns based on max-width
     private void setColumnWidth(JTable table) {
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         for (int column = 0; column < table.getColumnCount(); column++)
         {
             TableColumn tableColumn = table.getColumnModel().getColumn(column);
@@ -309,10 +319,18 @@ public class App {
 
     public static void startApp() {
         JFrame frame = new JFrame("Assistant");
-        frame.setContentPane(new App().rootPanel);
+        App ap = new App();
+        frame.setContentPane(ap.rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         App.centerWindow(frame);
         frame.setVisible(true);
+
+        /* the following statements fetches data from the internet. It is run after frame.setVisible() so
+        that the app can start faster, and data can be fetched later using threads (see method updateDataFeeds)
+         */
+        ap.sc = new ProthomAloScrapper();
+        ap.wd = new WeatherData();
+        ap.updateDataFeeds();
     }
 }
